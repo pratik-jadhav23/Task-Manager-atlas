@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Disp = () => {
   let obj = useContext(Ct);
   const [taskInput, setTaskInput] = useState("");
-  const [tasks, setTasks] = useState([]);
+  let [tasks, setTasks] = useState([]);
   const navigate = useNavigate()
   console.log(obj);
 
@@ -25,7 +25,14 @@ const Disp = () => {
   }, []);
 
   const handleAddTask = () => {
-    setTasks([...tasks, taskInput])
+    try {
+      setTasks([...tasks, taskInput])
+      
+    } catch (error) {
+      console.log(error.message);
+      
+    }
+
     let data = { tasks: taskInput, _id: obj.store._id };
     axios
       .post(`http://localhost:5001/addtask`, data)
@@ -33,7 +40,7 @@ const Disp = () => {
         console.log("task added");
       })
       .catch((error) => {
-        console.log("Error in task axios ");
+        console.log("Error in adding task axios ");
       });
   };
 
