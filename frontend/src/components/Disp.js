@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import Ct from "./Ct";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -7,30 +7,27 @@ const Disp = () => {
   let obj = useContext(Ct);
   const [taskInput, setTaskInput] = useState("");
   let [tasks, setTasks] = useState([]);
-  const navigate = useNavigate()
-  console.log(obj);
+  const myRef = useRef(null); 
+  const navigate = useNavigate();
 
   useEffect(() => {
-  if(obj.store.token){
-    axios
-    .get(`http://localhost:5001/getalltasks/${obj.store._id}`)
-    .then((res) => {
-      console.log("got all tasks");
-      setTasks(res.data);
-    })
-    .catch((error) => {
-      console.log("Error in getalltasks in axios", error.message);
-    });
-  }
+    if (obj.store.token) {
+      axios
+        .get(`http://localhost:5001/getalltasks/${obj.store._id}`)
+        .then((res) => {
+          setTasks(res.data);
+        })
+        .catch((error) => {
+          console.log("Error in getalltasks in axios", error.message);
+        });
+    }
   }, []);
 
   const handleAddTask = () => {
     try {
-      setTasks([...tasks, taskInput])
-      
+      setTasks([...tasks, taskInput]);
     } catch (error) {
       console.log(error.message);
-      
     }
 
     let data = { tasks: taskInput, _id: obj.store._id };
@@ -42,22 +39,47 @@ const Disp = () => {
       .catch((error) => {
         console.log("Error in adding task axios ");
       });
+      setTaskInput('')
   };
 
   const logout = () => {
-    obj.updstore({ token: "", username: "", _id:""})
-    navigate("/")
+    obj.updstore({ token: "", username: "", _id: "" });
+    navigate("/");
+  };
 
+  const deleteTask = (index) => {
+    // console.log(index);
+    try {
+      let updatedTasks = tasks.filter((_,i) => i!==index)
+      setTasks([...updatedTasks]);
+    } catch (error) {
+      console.log(error.message);
+    }
+
+    let data = {_id: obj.store._id, index: index };
+    axios
+      .post(`http://localhost:5001/deletetask`, data)
+      .then(() => {
+        console.log("task deleted");
+      })
+      .catch((error) => {
+        console.log("Error in deleting task axios ");
+      });
+  };
+
+  const handleEdit = (e,index) => {
+    // setTaskInput(e.target.value)
   }
-  
 
   return (
     <div>
-     <div className="disp">
-     <div>logged in as {obj.store.username}</div>
-     <div><button onClick={logout}>logout</button></div>
-     </div>
-     <hr/>
+      <div className="disp">
+        <div>logged in as {obj.store.username}</div>
+        <div>
+          <button onClick={logout}>logout</button>
+        </div>
+      </div>
+      <hr />
       <div>
         <input
           type="text"
@@ -69,10 +91,7 @@ const Disp = () => {
       </div>
 
       <div>
-        <table
-          border="1"
-          style={{ borderCollapse: "collapse", width: "100%" }}
-        >
+        <table border="1" style={{ borderCollapse: "collapse", width: "100%" }}>
           <thead>
             <tr>
               <th>#</th>
@@ -80,20 +99,25 @@ const Disp = () => {
               <th>Actions</th>
             </tr>
           </thead>
-          {tasks.length>0&&<tbody>
-            {tasks.map((task, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{task}</td>
-                <td>
-                  <button>Edit</button>
-                  <button style={{ marginLeft: "10px" }}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>}
+          {tasks.length > 0 && (
+            <tbody>
+              {tasks.map((task, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{task}</td>
+                  <td>
+                    <button ref={myRef} onClick={()=> handleEdit(index)}>Edit</button>
+                    <button
+                      style={{ marginLeft: "10px" }}
+                      onClick={() => deleteTask(index)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
     </div>

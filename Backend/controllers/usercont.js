@@ -10,7 +10,7 @@ const reguser = async (req, res) => {
     await data.save();
     res.json({ msg: "user Registered" });
   } catch (error) {
-    console.log(error.message);
+    // console.log(error.message);
     if (error.message.includes("duplicate key error collection")) {
       res.json({ err: "user already exists! please login" });
     } else {
@@ -43,28 +43,44 @@ const userlogin = async (req, res) => {
 };
 
 const addtask = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     const updatedUser = await taskm.findByIdAndUpdate(
       req.body._id,
       { $push: { tasks: req.body.tasks } }, // add to array
       { new: true, upsert: true } // return updated doc; create if not exists
     );
-    res.json({"msg":"task added"});
+    res.json({ msg: "task added" });
   } catch (err) {
     res.json({ err: err.message });
   }
 };
 
-const getalltasks = async(req,res)=>{
-   try {
-    const tasks = await taskm.findById({["_id"]:req.params._id})
-    console.log(tasks.tasks);
-    res.json(tasks.tasks)
-   } catch (error) {
-    res.json({err:"Error in getalltasks bkend"})
-   }
-    
-}
+const getalltasks = async (req, res) => {
+  try {
+    const tasks = await taskm.findById({ ["_id"]: req.params._id });
+    // console.log(tasks.tasks);
+    res.json(tasks.tasks);
+  } catch (error) {
+    res.json({ err: "Error in getalltasks bkend" });
+  }
+};
 
-module.exports = { reguser, userlogin, addtask, getalltasks };
+const deletetask = async (req, res) => {
+  // console.log(req.body);
+  try {
+    const { _id, index } = req.body;
+    
+    const user = await taskm.findById(_id);
+
+    user.tasks.splice(index, 1);
+    // user.tasks = user.tasks.filter((_, i) => i !== index);
+    await user.save();
+
+    res.send({ message: "Task deleted", user });
+  } catch (err) {
+    res.status(500).send({ message: "Error deleting task", error: err });
+  }
+};
+
+module.exports = { reguser, userlogin, addtask, getalltasks, deletetask };
