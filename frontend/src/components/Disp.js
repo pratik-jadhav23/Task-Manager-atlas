@@ -9,6 +9,7 @@ const Disp = () => {
   let [tasks, setTasks] = useState([]);
   const myRef = useRef(null); 
   const navigate = useNavigate();
+  
 
   useEffect(() => {
     if (obj.store.token) {
@@ -23,23 +24,35 @@ const Disp = () => {
     }
   }, []);
 
-  const handleAddTask = () => {
-    try {
-      setTasks([...tasks, taskInput]);
-    } catch (error) {
-      console.log(error.message);
-    }
+  const handleAddTask = (index) => {
+    console.log(myRef.current.innerText);
+    if(myRef.current.innerText==='Save Task'){
+      let editedTasks = [...tasks]
+      editedTasks.splice(index, 0, taskInput);
+      console.log(editedTasks);
+      setTasks([...editedTasks]);
 
-    let data = { tasks: taskInput, _id: obj.store._id };
-    axios
-      .post(`http://localhost:5001/addtask`, data)
-      .then(() => {
-        console.log("task added");
-      })
-      .catch((error) => {
-        console.log("Error in adding task axios ");
-      });
-      setTaskInput('')
+    }
+    else{
+      try {
+        setTasks([...tasks, taskInput]);
+      } catch (error) {
+        console.log(error.message);
+      }
+  
+      let data = { tasks: taskInput, _id: obj.store._id };
+      axios
+        .post(`http://localhost:5001/addtask`, data)
+        .then(() => {
+          console.log("task added");
+        })
+        .catch((error) => {
+          console.log("Error in adding task axios ");
+        });
+        setTaskInput('')
+    }
+    
+   
   };
 
   const logout = () => {
@@ -67,8 +80,11 @@ const Disp = () => {
       });
   };
 
-  const handleEdit = (e,index) => {
-    // setTaskInput(e.target.value)
+  const handleEdit = (index,task) => {
+    console.log(index,task, myRef.current.innerText);
+    myRef.current.innerText = "Save Task"
+    setTaskInput(task)
+
   }
 
   return (
@@ -81,13 +97,13 @@ const Disp = () => {
       </div>
       <hr />
       <div>
-        <input
+        <input 
           type="text"
           value={taskInput}
           onChange={(e) => setTaskInput(e.target.value)}
           placeholder="Enter a task"
         />
-        <button onClick={handleAddTask}>Add Task</button>
+        <button ref={myRef} onClick={handleAddTask}>Add Task</button>
       </div>
 
       <div>
@@ -106,7 +122,7 @@ const Disp = () => {
                   <td>{index + 1}</td>
                   <td>{task}</td>
                   <td>
-                    <button ref={myRef} onClick={()=> handleEdit(index)}>Edit</button>
+                    <button  onClick={()=> handleEdit(index, task)}>Edit</button>
                     <button
                       style={{ marginLeft: "10px" }}
                       onClick={() => deleteTask(index)}
