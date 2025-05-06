@@ -10,6 +10,7 @@ import Disp from "./components/Disp";
 import "./App.css";
 import LoginReg from "./components/LoginReg";
 import Ct from "./components/Ct";
+import Edit from "./components/Edit";
 
 function App() {
   let [store, setStore] = useState({ token: "", username: "", _id:""});
@@ -27,6 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginReg />} />
           <Route path="/disp" element={<Disp />} />
+          <Route path="/edit" element={<Edit/>}/>
         </Routes>
         </Ct.Provider>
       </BrowserRouter>

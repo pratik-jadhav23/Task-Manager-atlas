@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Ct from "./Ct";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -6,8 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Disp = () => {
   let obj = useContext(Ct);
   const [taskInput, setTaskInput] = useState("");
-  let [tasks, setTasks] = useState([]);
-  const myRef = useRef(null); 
+  let [tasks, setTasks] = useState([]); 
   const navigate = useNavigate();
   
 
@@ -25,15 +24,6 @@ const Disp = () => {
   }, []);
 
   const handleAddTask = (index) => {
-    console.log(myRef.current.innerText);
-    if(myRef.current.innerText==='Save Task'){
-      let editedTasks = [...tasks]
-      editedTasks.splice(index, 0, taskInput);
-      console.log(editedTasks);
-      setTasks([...editedTasks]);
-
-    }
-    else{
       try {
         setTasks([...tasks, taskInput]);
       } catch (error) {
@@ -50,9 +40,6 @@ const Disp = () => {
           console.log("Error in adding task axios ");
         });
         setTaskInput('')
-    }
-    
-   
   };
 
   const logout = () => {
@@ -80,11 +67,9 @@ const Disp = () => {
       });
   };
 
-  const handleEdit = (index,task) => {
-    console.log(index,task, myRef.current.innerText);
-    myRef.current.innerText = "Save Task"
-    setTaskInput(task)
-
+  const handleEdit = (ind) => {
+    obj.updstore(ind)
+    navigate("/edit")
   }
 
   return (
@@ -103,7 +88,7 @@ const Disp = () => {
           onChange={(e) => setTaskInput(e.target.value)}
           placeholder="Enter a task"
         />
-        <button ref={myRef} onClick={handleAddTask}>Add Task</button>
+        <button onClick={handleAddTask}>Add Task</button>
       </div>
 
       <div>
@@ -122,7 +107,7 @@ const Disp = () => {
                   <td>{index + 1}</td>
                   <td>{task}</td>
                   <td>
-                    <button  onClick={()=> handleEdit(index, task)}>Edit</button>
+                    <button  onClick={()=> handleEdit({"index":index})}>Edit</button>
                     <button
                       style={{ marginLeft: "10px" }}
                       onClick={() => deleteTask(index)}
