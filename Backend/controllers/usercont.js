@@ -69,7 +69,7 @@ const getalltasks = async (req, res) => {
 const deletetask = async (req, res) => {
   // console.log(req.body);
   try {
-    const { _id, index } = req.body;
+    const { _id, index } = req.params;
     
     const user = await taskm.findById(_id);
 
@@ -77,10 +77,23 @@ const deletetask = async (req, res) => {
     // user.tasks = user.tasks.filter((_, i) => i !== index);
     await user.save();
 
-    res.send({ message: "Task deleted", user });
+    res.send({ message: "Task deleted"});
   } catch (err) {
     res.status(500).send({ message: "Error deleting task", error: err });
   }
 };
 
-module.exports = { reguser, userlogin, addtask, getalltasks, deletetask };
+const updateTask = async(req,res) => {
+  try {
+    const { _id, index, task } = req.body;
+    const user = await taskm.findById(_id);
+    user.tasks[index] = task
+    await user.save();
+    res.send({ message: "Task updated"});
+  } catch (error) {
+    res.status(500).send({ message: "Error updating task", error: err });
+  }
+}
+
+
+module.exports = { reguser, userlogin, addtask, getalltasks, deletetask, updateTask };

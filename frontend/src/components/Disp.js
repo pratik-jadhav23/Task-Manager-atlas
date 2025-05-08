@@ -7,6 +7,8 @@ const Disp = () => {
   let obj = useContext(Ct);
   const [taskInput, setTaskInput] = useState("");
   let [tasks, setTasks] = useState([]); 
+  let [f,setF] = useState(false)
+  let [flag,setFlag]= useState(false)
   const navigate = useNavigate();
   
 
@@ -16,25 +18,22 @@ const Disp = () => {
         .get(`http://localhost:5001/getalltasks/${obj.store._id}`)
         .then((res) => {
           setTasks(res.data);
+          console.log("flag changed",flag);
+          
         })
         .catch((error) => {
           console.log("Error in getalltasks in axios", error.message);
         });
     }
-  }, []);
+  }, [flag]);
 
   const handleAddTask = (index) => {
-      try {
-        setTasks([...tasks, taskInput]);
-      } catch (error) {
-        console.log(error.message);
-      }
-  
       let data = { tasks: taskInput, _id: obj.store._id };
       axios
         .post(`http://localhost:5001/addtask`, data)
         .then(() => {
           console.log("task added");
+          setFlag(!flag)
         })
         .catch((error) => {
           console.log("Error in adding task axios ");
@@ -48,19 +47,11 @@ const Disp = () => {
   };
 
   const deleteTask = (index) => {
-    // console.log(index);
-    try {
-      let updatedTasks = tasks.filter((_,i) => i!==index)
-      setTasks([...updatedTasks]);
-    } catch (error) {
-      console.log(error.message);
-    }
-
-    let data = {_id: obj.store._id, index: index };
     axios
-      .post(`http://localhost:5001/deletetask`, data)
+      .delete(`http://localhost:5001/deletetask/${ obj.store._id}/${index}`)
       .then(() => {
         console.log("task deleted");
+        setFlag(!flag)
       })
       .catch((error) => {
         console.log("Error in deleting task axios ");
@@ -69,8 +60,28 @@ const Disp = () => {
 
   const handleEdit = (ind) => {
     obj.updstore(ind)
-    navigate("/edit")
+    console.log(obj);
+    setF(true)
+    setTaskInput(tasks[ind.index])
+    
+    // navigate("/edit")
   }
+
+  const updateTask = () => {
+    let data = {_id: obj.store._id, index: obj.store.index, task:taskInput };
+    axios
+      .put(`http://localhost:5001/updateTask/`, data)
+      .then(() => {
+        console.log("task updated");
+        setF(false)
+        setFlag(!flag)
+        setTaskInput("")
+      })
+      .catch((error) => {
+        console.log("Error in deleting task axios ");
+      });
+  }
+  
 
   return (
     <div>
@@ -88,7 +99,7 @@ const Disp = () => {
           onChange={(e) => setTaskInput(e.target.value)}
           placeholder="Enter a task"
         />
-        <button onClick={handleAddTask}>Add Task</button>
+        <button onClick={f?updateTask:handleAddTask}>{f?'Update':'Add'} Task</button>
       </div>
 
       <div>
