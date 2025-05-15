@@ -21,7 +21,7 @@ const PORT = process.env.PORT;
 app.use(express.json())
 app.use(cors()) 
 app.use("/",rt)
-
+ 
 app.listen(PORT, () => {
   console.log(`App started on http://localhost:${PORT}`);
 });

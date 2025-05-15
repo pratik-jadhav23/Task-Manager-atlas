@@ -43,13 +43,14 @@ const userlogin = async (req, res) => {
 };
 
 const addtask = async (req, res) => {
-  // console.log(req.body);
+  // console.log(req.body.tasks);
   try {
     const updatedUser = await taskm.findByIdAndUpdate(
       req.body._id,
       { $push: { tasks: req.body.tasks } }, // add to array
       { new: true, upsert: true } // return updated doc; create if not exists
     );
+    
     res.json({ msg: "task added" });
   } catch (err) {
     res.json({ err: err.message });

@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
 const Disp = () => {
   let obj = useContext(Ct);
   const [taskInput, setTaskInput] = useState("");
-  let [tasks, setTasks] = useState([]); 
-  let [f,setF] = useState(false)
-  let [flag,setFlag]= useState(false)
+  let [tasks, setTasks] = useState([]);
+  let [f, setF] = useState(false);
+  let [flag, setFlag] = useState(false);
+  let [showCompleted, setShowCompleted] = useState(true);
   const navigate = useNavigate();
-  
 
   useEffect(() => {
     if (obj.store.token) {
@@ -18,27 +18,27 @@ const Disp = () => {
         .get(`http://localhost:5001/getalltasks/${obj.store._id}`)
         .then((res) => {
           setTasks(res.data);
-          console.log("flag changed",flag);
-          
+          console.log("flag changed", flag);
         })
         .catch((error) => {
           console.log("Error in getalltasks in axios", error.message);
         });
     }
   }, [flag]);
-
+ 
   const handleAddTask = (index) => {
-      let data = { tasks: taskInput, _id: obj.store._id };
-      axios
-        .post(`http://localhost:5001/addtask`, data)
-        .then(() => {
-          console.log("task added");
-          setFlag(!flag)
-        })
-        .catch((error) => {
-          console.log("Error in adding task axios ");
-        });
-        setTaskInput('')
+    let task = {taskInput,}
+    let data = { tasks: {task:taskInput,isCompleted:false}, _id: obj.store._id };
+    axios
+      .post(`http://localhost:5001/addtask`, data)
+      .then(() => {
+        console.log("task added");
+        setFlag(!flag);
+      })
+      .catch((error) => {
+        console.log("Error in adding task axios ");
+      });
+    setTaskInput("");
   };
 
   const logout = () => {
@@ -48,10 +48,10 @@ const Disp = () => {
 
   const deleteTask = (index) => {
     axios
-      .delete(`http://localhost:5001/deletetask/${ obj.store._id}/${index}`)
+      .delete(`http://localhost:5001/deletetask/${obj.store._id}/${index}`)
       .then(() => {
         console.log("task deleted");
-        setFlag(!flag)
+        setFlag(!flag);
       })
       .catch((error) => {
         console.log("Error in deleting task axios ");
@@ -59,29 +59,32 @@ const Disp = () => {
   };
 
   const handleEdit = (ind) => {
-    obj.updstore(ind)
+    obj.updstore(ind);
     console.log(obj);
-    setF(true)
-    setTaskInput(tasks[ind.index])
-    
+    setF(true);
+    setTaskInput(tasks[ind.index]);
+
     // navigate("/edit")
-  }
+  };
 
   const updateTask = () => {
-    let data = {_id: obj.store._id, index: obj.store.index, task:taskInput };
+    let data = { _id: obj.store._id, index: obj.store.index, task: taskInput };
     axios
       .put(`http://localhost:5001/updateTask/`, data)
       .then(() => {
         console.log("task updated");
-        setF(false)
-        setFlag(!flag)
-        setTaskInput("")
+        setF(false);
+        setFlag(!flag);
+        setTaskInput("");
       })
       .catch((error) => {
         console.log("Error in deleting task axios ");
       });
-  }
-  
+  };
+
+  const toggleCompleted = () => {
+    setShowCompleted(!showCompleted);
+  };
 
   return (
     <div>
@@ -93,13 +96,22 @@ const Disp = () => {
       </div>
       <hr />
       <div>
-        <input 
+        <input
           type="text"
           value={taskInput}
           onChange={(e) => setTaskInput(e.target.value)}
           placeholder="Enter a task"
         />
-        <button onClick={f?updateTask:handleAddTask}>{f?'Update':'Add'} Task</button>
+        <button onClick={f ? updateTask : handleAddTask}>
+          {f ? "Update" : "Add"} Task
+        </button>
+        <input
+          type="checkbox"
+          id="show"
+          checked={showCompleted}
+          onChange={toggleCompleted}
+        />
+        <label htmlFor="show"></label>Show Completed Tasks
       </div>
 
       <div>
@@ -116,9 +128,13 @@ const Disp = () => {
               {tasks.map((task, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{task}</td>
+                  <td className={task.isCompleted?"completed":''}>
+                    <input type="checkbox"/>
+                    {task.task}</td>
                   <td>
-                    <button  onClick={()=> handleEdit({"index":index})}>Edit</button>
+                    <button onClick={() => handleEdit({ index: index })}>
+                      Edit
+                    </button>
                     <button
                       style={{ marginLeft: "10px" }}
                       onClick={() => deleteTask(index)}
@@ -127,7 +143,7 @@ const Disp = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
+              ))}                   
             </tbody>
           )}
         </table>

@@ -6,7 +6,10 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   tasks: {
-    type: [String], // array of strings
+    type: [{
+      task:String,
+      isCompleted:Boolean
+    }], // array of strings
     default: []
   }
 });

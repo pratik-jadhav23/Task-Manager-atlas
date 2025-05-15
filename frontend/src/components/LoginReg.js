@@ -12,6 +12,8 @@ function LoginReg() {
   let [data, setData] = useState({"_id":"","username":"","pass":""})
   let navigate = useNavigate()
   let obj=useContext(Ct)
+  let [flipped, setFlipped] = useState(false);
+
 
 
 
@@ -24,11 +26,11 @@ function LoginReg() {
     axios.post(`http://localhost:5001/reg`,data).then((res)=>{
       // console.log('registration success');
       if("msg" in res.data){
-        setMsg(res.data.msg)
+        alert(res.data.msg)
         setData({"_id":"","username":"","pass":""})
       }
       else{
-        setMsg(res.data.err)
+        alert(res.data.err)
       }
       
     }).catch((error) => {
@@ -48,8 +50,8 @@ function LoginReg() {
   
         }
         else{
-          if("msg" in res.data) setMsg(res.data.msg)
-          else setMsg(res.data.err)
+          if("msg" in res.data) alert(res.data.msg)
+          else alert(res.data.err)
         }
     }).catch((error) => {
       console.log("axios error in login");
@@ -62,6 +64,22 @@ function LoginReg() {
 
   return (
     <div className="container">
+     <div className={`flipcard ${flipped ? "flipped" : ""}`}>
+       <div className="auth-box login">
+        <h2>Login</h2>
+        <div className="input-group">
+          <label>Email</label>
+          <input type="email" placeholder="Enter email" name="_id" value={data._id} onChange={fun} />
+        </div>
+        <div className="input-group">
+          <label>Password</label>
+          <input type="password" placeholder="Enter password" name="pass" value={data.pass} onChange={fun} />
+        </div>
+        <button className="submit-btn" onClick={login}>Log In</button>
+        <div>Not a User <button className="signup" onClick={() => setFlipped(true)}>Signup</button>
+</div>
+      </div>
+
       <div className="auth-box register">
         <h2>Register</h2>
         <div className="input-group">
@@ -77,23 +95,11 @@ function LoginReg() {
           <input type="password" placeholder="Enter password" value={data.pass} name="pass" onChange={fun} />
         </div>
         <button className="submit-btn" onClick={reg}>Sign Up</button>
+        <div>Already have an account? <button onClick={() => setFlipped(false)}>Login</button></div>
 
       </div>
-
-      <div className="auth-box login">
-        <h2>Login</h2>
-        <div className="input-group">
-          <label>Email</label>
-          <input type="email" placeholder="Enter email" name="_id" value={data._id} onChange={fun} />
-        </div>
-        <div className="input-group">
-          <label>Password</label>
-          <input type="password" placeholder="Enter password" name="pass" value={data.pass} onChange={fun} />
-        </div>
-        <button className="submit-btn" onClick={login}>Log In</button>
-      </div>
-       {msg!=""&&<div className='err'>{msg}</div>
-        }
+     </div>
+       {/* {msg!=""&& window.alert(msg)} */}
     </div>
   );
 }
