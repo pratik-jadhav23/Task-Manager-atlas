@@ -88,13 +88,25 @@ const updateTask = async(req,res) => {
   try {
     const { _id, index, task } = req.body;
     const user = await taskm.findById(_id);
-    user.tasks[index] = task
+    user.tasks[index].task = task
     await user.save();
     res.send({ message: "Task updated"});
   } catch (error) {
-    res.status(500).send({ message: "Error updating task", error: err });
+    res.status(500).send({ message: "Error updating task", error: error });
   }
 }
 
+const taskCompleted = async(req,res) => {
+  try {
+    const { _id, index} = req.body;
+    const user = await taskm.findById(_id);
+    user.tasks[index].isCompleted = !user.tasks[index].isCompleted
+    await user.save()
+    res.send({message: "Task Completed"})
+  } catch (error) {
+    res.status(500).send({ message: "Error in task completed", error: error });
+  }
+}
+ 
 
-module.exports = { reguser, userlogin, addtask, getalltasks, deletetask, updateTask };
+module.exports = { reguser, userlogin, addtask, getalltasks, deletetask, updateTask, taskCompleted };

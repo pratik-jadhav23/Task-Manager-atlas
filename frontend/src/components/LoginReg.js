@@ -83,12 +83,12 @@ function LoginReg() {
       <div className="auth-box register">
         <h2>Register</h2>
         <div className="input-group">
-          <label>Username</label>
-          <input type="text" placeholder="Enter username" value={data.username} name="username" onChange={fun} />
-        </div>
-        <div className="input-group">
           <label>Email</label>
           <input type="email" placeholder="Enter email" value={data._id} name="_id" onChange={fun}  />
+        </div>
+        <div className="input-group">
+          <label>Username</label>
+          <input type="text" placeholder="Enter username" value={data.username} name="username" onChange={fun} />
         </div>
         <div className="input-group">
           <label>Password</label>
@@ -99,7 +99,6 @@ function LoginReg() {
 
       </div>
      </div>
-       {/* {msg!=""&& window.alert(msg)} */}
     </div>
   );
 }
