@@ -17,6 +17,7 @@
 .DS_Store
 Thumbs.db
 
+
 # Ignore build artifacts and output
 /bin
 /build
