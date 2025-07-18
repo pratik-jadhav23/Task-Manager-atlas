@@ -1,31 +1,46 @@
-# Ignore generated files
-*.class
-*.jar
-*.o
-*.pyc
-*.dll
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Ignore sensitive information
-*.key
-*.pem
-*.env
-*.config
-
-# Ignore user-specific files
+# Logs
+logs/
 *.log
-*.swp
+*.log.*
+
+# OS files
 .DS_Store
 Thumbs.db
 
+# Environment files
+.env
+.env.local
+.env.*.local
 
-# Ignore build artifacts and output
-/bin
-/build
-/dist
-/target
+# Build output
+dist/
+build/
+out/
+coverage/
 
-# Ignore third-party libraries and dependencies
-/node_modules
-/vendor
-/.venv
-/.gradle
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Misc
+*.tgz
+*.zip
+*.tar
+*.bak
+*.tmp
+*.swp
+
+# TypeScript
+*.tsbuildinfo
+
+# Git
+.git/
