@@ -24,4 +24,4 @@ git reset --hard origin/main
 
 This discards all local commits and sets your branch to exactly match the remote one.
 
-All uncommitted changes will also be lost.
+All uncommitted changes will also be lost. 
