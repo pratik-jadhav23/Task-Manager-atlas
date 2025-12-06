@@ -7,8 +7,14 @@ const rt = require("./routes/routes");
 
 dotenv.config();
 
+// Use MONGODB_URI from environment
+const uri = process.env.MONGO_URI;
+if (!uri) {
+  console.error('MONGODB_URI not set — app will fail to connect to DB.');
+}
+
 mongoose
-  .connect(process.env.MONGO_URI, { 
+  .connect(uri, { 
     // useNewUrlParser: true,
     // useUnifiedTopology: true,
   })
@@ -22,6 +28,6 @@ app.use(express.json())
 app.use(cors()) 
 app.use("/",rt)
  
-app.listen(PORT, () => {
+app.listen(PORT, () => { 
   console.log(`App started on http://localhost:${PORT}`);
 });
