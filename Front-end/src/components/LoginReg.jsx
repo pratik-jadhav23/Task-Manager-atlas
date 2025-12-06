@@ -19,7 +19,7 @@ function LoginReg() {
 
   const reg = () => {
     axios
-      .post(`http://localhost:5001/reg`, data)
+      .post(`https://task-manager-atlas.onrender.com/reg`, data)
       .then((res) => {
         // console.log('registration success');
         if ("msg" in res.data) {
@@ -36,7 +36,7 @@ function LoginReg() {
 
   const login = () => {
     axios
-      .post(`http://localhost:5001/login`, data)
+      .post(`https://task-manager-atlas.onrender.com/login`, data)
       .then((res) => {
         // console.log('login success f');
         if (res.data.token != undefined) {

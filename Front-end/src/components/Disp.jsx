@@ -16,7 +16,7 @@ const Disp = () => {
   useEffect(() => {
     if (obj.store.token) {
       axios
-        .get(`http://localhost:5001/getalltasks/${obj.store._id}`)
+        .get(`https://task-manager-atlas.onrender.com/getalltasks/${obj.store._id}`)
         .then((res) => {
           setTasks(res.data);
           // console.log("flag changed", flag);
@@ -31,7 +31,7 @@ const Disp = () => {
     let task = {taskInput}
     let data = { tasks: {task:taskInput,isCompleted:false}, _id: obj.store._id };
     axios
-      .post(`http://localhost:5001/addtask`, data)
+      .post(`https://task-manager-atlas.onrender.com/addtask`, data)
       .then(() => {
         console.log("task added");
         setFlag(!flag);
@@ -49,7 +49,7 @@ const Disp = () => {
 
   const deleteTask = (index) => {
     axios
-      .delete(`http://localhost:5001/deletetask/${obj.store._id}/${index}`)
+      .delete(`https://task-manager-atlas.onrender.com/deletetask/${obj.store._id}/${index}`)
       .then(() => {
         console.log("task deleted");
         setFlag(!flag);
@@ -71,7 +71,7 @@ const Disp = () => {
   const updateTask = () => {
     let data = { _id: obj.store._id, index: obj.store.index, task: taskInput };
     axios
-      .put(`http://localhost:5001/updateTask/`, data)
+      .put(`https://task-manager-atlas.onrender.com/updateTask/`, data)
       .then(() => {
         console.log("task updated");
         setF(false);
@@ -90,7 +90,7 @@ const Disp = () => {
   const handleTaskCompleted = (index) => {
     let data = { _id: obj.store._id, index };
     axios
-      .put(`http://localhost:5001/taskCompleted/`, data)
+      .put(`https://task-manager-atlas.onrender.com/taskCompleted/`, data)
       .then(() => {
         console.log("task completed");
         setFlag(!flag);
